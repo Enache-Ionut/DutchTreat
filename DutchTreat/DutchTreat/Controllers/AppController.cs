@@ -10,12 +10,20 @@ namespace DutchTreat.Controllers
   {
     public IActionResult Index()
     {
-      throw new InvalidOperationException();
       return View();
     }
 
+    public IActionResult Contact()
+    {
+      ViewBag.Title = "Contact us";
+      return View();
+    }
 
-
+    public IActionResult About()
+    {
+      ViewBag.Title = "About";
+      return View();
+    }
 
 
 

@@ -20,7 +20,7 @@ namespace DutchTreat.ViewModels
     public string Subject { get; set; }
     
     [Required]
-    [MaxLength(250)]
+    [MaxLength(250, ErrorMessage ="The maximum number of characters must be 250")]
     public string Message { get; set; }
   }
 }

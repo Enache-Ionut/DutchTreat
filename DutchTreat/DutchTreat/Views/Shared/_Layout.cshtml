@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <title>Dutch Treat: @ViewBag.Title</title>
 
+  <link href="~/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="~/css/site.css" rel="stylesheet" />
 
 </head>
 <body>
-  <header>
+  <header class="container">
     <h1>Welcome to Duch Treat</h1>
 
     <menu>
@@ -21,15 +22,18 @@
      
   </header>
 
-  <section>
+  <section class="container">
     <h2>@ViewBag.Title</h2>
     @RenderBody()
   </section>
 
-  <footer>Copyright 2019 Dutch LLC</footer>
+  <footer class="container">
+    <div class="text-center">Copyright 2019 Dutch LLC</div>
+  </footer>
 
   <script src="~/node_modules/jquery/dist/jquery.min.js"></script>
   <script src="~/js/index.js"></script>
+  <script src="~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   @RenderSection("scripts", false)
 </body>
 </html>

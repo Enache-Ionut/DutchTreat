@@ -1,4 +1,5 @@
 ﻿using DutchTreat.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,29 @@ namespace DutchTreat.Data
       this.logger = logger;
     }
 
+    public void AddEntity(object model)
+    {
+      context.Add(model);
+    }
+
+    public IEnumerable<Order> GetAllOrders()
+    {
+      try
+      {
+        logger.LogInformation("GetAllOrders was called");
+
+        return context.Orders
+          .Include(o => o.Items)
+          .ThenInclude(i => i.Product)
+          .ToList();
+      }
+      catch (Exception ex)
+      {
+        logger.LogError($"Failed to get all orders: {ex}");
+        return null;
+      }
+    }
+
     public IEnumerable<Product> GetAllProducts()
     {
       try
@@ -33,6 +57,15 @@ namespace DutchTreat.Data
         logger.LogError($"Failed to get all products: {ex}");
         return null;
       }
+    }
+
+    public Order GetOrderById(int id)
+    {
+      return context.Orders
+          .Include(o => o.Items)
+          .ThenInclude(i => i.Product)
+          .Where(o => o.Id == id)
+          .FirstOrDefault();
     }
 
     public IEnumerable<Product> GetProductsByCategory(string category)
@@ -52,15 +85,15 @@ namespace DutchTreat.Data
 
     public bool SaveAll()
     {
-      try
-      {
+      //try
+      //{
         return context.SaveChanges() > 0;
-      }
-      catch (Exception ex)
-      {
-        logger.LogError($"Failed to save the changes: {ex}");
-        return false;
-      }
+      //}
+      //catch (Exception ex)
+      //{
+        //logger.LogError($"Failed to save the changes: {ex}");
+        //return false;
+      //}
     }
 
   }

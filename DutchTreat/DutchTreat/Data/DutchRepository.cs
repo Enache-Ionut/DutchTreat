@@ -24,16 +24,25 @@ namespace DutchTreat.Data
       context.Add(model);
     }
 
-    public IEnumerable<Order> GetAllOrders()
+    public IEnumerable<Order> GetAllOrders(bool includeItems)
     {
       try
       {
+        if(includeItems)
+        {
+
         logger.LogInformation("GetAllOrders was called");
 
         return context.Orders
           .Include(o => o.Items)
           .ThenInclude(i => i.Product)
           .ToList();
+        }
+        else
+        {
+          return context.Orders
+            .ToList();
+        }
       }
       catch (Exception ex)
       {

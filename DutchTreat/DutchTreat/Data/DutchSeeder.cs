@@ -1,5 +1,6 @@
 ﻿using DutchTreat.Data.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,18 +14,40 @@ namespace DutchTreat.Data
   {
     private readonly DutchContext context;
     private readonly IWebHostEnvironment hosting;
+    private readonly UserManager<StoreUser> userManager;
 
-    public DutchSeeder(DutchContext context, IWebHostEnvironment hosting)
+    public DutchSeeder(DutchContext context,
+      IWebHostEnvironment hosting, UserManager<StoreUser> userManager)
     {
       this.context = context;
       this.hosting = hosting;
+      this.userManager = userManager;
     }
 
-    public void Seed()
+    public async Task SeedAsync()
     {
       context.Database.EnsureCreated();
 
-      if( !context.Products.Any())
+      StoreUser user = await userManager.FindByEmailAsync("jhondoe@gmail.com");
+
+      if (user == null)
+      {
+        user = new StoreUser()
+        {
+          FirstName = "Jhon",
+          LastName = "Doe",
+          Email = "jhondoe@gmail.com",
+          UserName = "jhondoe@gmail.com"
+        };
+
+        var result = await userManager.CreateAsync(user, "P@ssw0rd");
+        if(result != IdentityResult.Success)
+        {
+          throw new InvalidOperationException("Could not create new user in seeder");
+        }
+      }
+
+      if (!context.Products.Any())
       {
         // create sample data
         var filePath = Path.Combine(hosting.ContentRootPath, "Data/art.json");
@@ -34,8 +57,9 @@ namespace DutchTreat.Data
         context.Products.AddRange(products);
 
         var order = context.Orders.Where(o => o.Id == 1).FirstOrDefault();
-        if(order != null)
+        if (order != null)
         {
+          order.User = user;
           order.Items = new List<OrderItem>()
           {
             new OrderItem()
